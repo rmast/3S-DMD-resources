@@ -24,20 +24,38 @@ LFLAG=-L../shared/SplineGenerate/lib/configuration -lgtapplications -lgtgraphics
 
 EXTERNAL = ../shared/bcl/libbcl.a ../shared/FastAC/arithmetic_codec.o  ../shared/CUDASkel2D/CUDASkel2D.a ../shared/configParser/lib/Config.a ../shared/squash/squash/libsquash0.8.so ../shared/SplineGenerate/BSplineCurveFitter/configuration/BSplineCurveFitterWindow3.o
 ABSOUT=$(MPATH:Makefile=)$(OUTDIR)
-.PHONY: all external out
+.PHONY: all out
 default:all
 
 
-all:external $(OBJ)
+all: $(OBJ) ../shared/squash/squash/libsquash0.8.so ../shared/CUDASkel2D/CUDASkel2D.a ../shared/SplineGenerate/BSplineCurveFitter/configuration/BSplineCurveFitterWindow3.o
 	$(CXX) $(CPPFLAGS) -o $(OUTFILE) $(OBJ) $(EXTERNAL) $(CUDAFLAGS) $(LFLAG)
-	
-external:
+
+../shared/configParser/lib/Config.a:
 	make -C ../shared/configParser -f Makefile
+
+../shared/CUDASkel2D/CUDASkel2D.a:
 	make -C ../shared/CUDASkel2D -f Makefile skeleton
-	#make -C ../shared/squash -f Makefile
+
+../shared/bcl/libbcl.a:
 	make -C ../shared/bcl -f Makefile 
-	make -C ../shared/SplineGenerate/BSplineCurveFitter CFG=configuration APP=BSplineCurveFitter -f ../makesample.gte 
+
+../shared/FastAC/arithmetic_codec.o:
 	g++ -g ../shared/FastAC/arithmetic_codec.cpp -c -o ../shared/FastAC/arithmetic_codec.o
+
+../shared/SplineGenerate/BSplineCurveFitter/configuration/BSplineCurveFitterWindow3.o:
+	make -C ../shared/SplineGenerate/BSplineCurveFitter CFG=configuration APP=BSplineCurveFitter -f ../makesample.gte 
+
+
+../shared/squash/configure:
+	git submodule update --init
+
+../shared/squash/Makefile: ../shared/squash/configure
+	(cd ../shared/squash;./configure)
+
+../shared/squash/squash/libsquash0.8.so: ../shared/squash/Makefile
+	make -C ../shared/squash -f Makefile
+
 
 
 library : all
@@ -50,7 +68,7 @@ $(OUTDIR)%.o : %.cpp
 	$(CXX) $(CPPFLAGS) -c $< -o $@
 
 clean:
-	$(RM) *.o *.gch
+	$(RM) *.o *.gch ../shared/CUDASkel2D/CUDASkel2D.a ../shared/SplineGenerate/BSplineCurveFitter/configuration/BSplineCurveFitterWindow3.o
 	$(RM) ../shared/FastAC/arithmetic_codec.o
 	$(RM) -rf lib
 	$(RM) -rf out

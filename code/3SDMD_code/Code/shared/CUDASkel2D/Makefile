@@ -14,7 +14,7 @@ all: skeleton
 
 skeleton: $(OBJECTS)
 	$(CXX) -c skelft_core.o $(CCFLAGS) skelft_core.cpp
-	$(NVCC) -c skelft.o $(CCFLAGS) -I$(CUDAINC) -use_fast_math -gencode=arch=compute_52,code=\"sm_52,compute_52\" --ptxas-options=-v skelft.cu
+	$(NVCC) -c skelft.o $(CCFLAGS) -I$(CUDAINC) -use_fast_math -gencode=arch=compute_52,code=sm_52 -gencode=arch=compute_37,code=sm_37 --ptxas-options=-v skelft.cu
 	ar rvs CUDASkel2D.a *.o
 
 skelft_core.o: skelft_core.cpp

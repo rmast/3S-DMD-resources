@@ -1,3 +1,6 @@
 [submodule "code/3SDMD_code/Code/shared/squash"]
 	path = code/3SDMD_code/Code/shared/squash
 	url = https://github.com/quixdb/squash.git
+[submodule "code/3SDMD_code/Code/shared/FastAC"]
+	path = code/3SDMD_code/Code/shared/FastAC
+	url = https://github.com/richgel999/FastAC.git
